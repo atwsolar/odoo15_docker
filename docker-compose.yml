@@ -1,0 +1,29 @@
+version: '3.1'
+services:
+  db:
+    image: postgres:13
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./db_odoo:/var/lib/postgresql/data
+  odoo15:
+    image: odoo:15
+    depends_on:
+      - db
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8059:8069"
+    volumes:
+      - odoo_15_data:/var/lib/odoo
+      - ./config_odoo_15:/etc/odoo
+      - ./customaddons:/opt/odoo/customaddons
+    command: odoo --dev=reload
+volumes:
+  odoo_15_data:
+  db_odoo:
